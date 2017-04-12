@@ -26,10 +26,13 @@ def get_ad_insights():
         
         for ad in account.get_ad_sets():
             
-            ### Set the period of time (Default = 1 week)
+            ### Set the period of time. Set to 40 weeks because nothing would show otherwise in the arrays
             today = datetime.date.today()
             start_time = str(today - datetime.timedelta(weeks=40))
             end_time = str(today)
+            
+            ### Fields
+            # https://developers.facebook.com/docs/marketing-api/insights/fields/v2.8
             fields = ['account_name',
                       'ad_name',
                       'adset_name',
