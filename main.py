@@ -51,12 +51,20 @@ def get_ad_insights():
                     'since': start_time,
                     'until': end_time,
                 },
-                'level': AdsInsights.Level.ad
+                'level': 'ad'
 
             }
             
-            insights = ad.get_insights(fields = fields, params = params)
-            print(insights)
+            insights = ad.get_insights(fields = fields, params = params, async = True)
+            insights.remote_read()
+            
+            while insights['async_percent_completion'] < 100:
+                time.sleep(1)
+                insights.remote_read()
+                
+            for ad in insights.get_result():
+                print(ad['ad_name'])
+                print(ad['relevance_score'])
 
 
 
