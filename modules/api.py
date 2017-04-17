@@ -36,3 +36,21 @@ class FacebookAPI:
             ])
             if campaign['name'] == 'Prospecting':
                 return camp['id']
+    
+    def get_campaign_stats(self,campaign_id):
+        """Takes in a campaign id and returns all the required data points for the campaign"""
+        campaign = Campaign(campaign_id)
+        fields = ['account_name',
+                  'campaign_name',
+                  'clicks',
+                  'cpc',
+                  'reach',
+                  'ctr',
+                  'frequency',
+                  'impressions',
+                  'reach',
+                  'cpm',
+                  'relevance_score']
+
+        insights = campaign.get_insights(fields=fields)
+        return insights
