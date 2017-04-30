@@ -1,4 +1,5 @@
 from modules.api import FacebookAPI
+from modules.db import Database
 
 
 
@@ -7,7 +8,7 @@ def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
     print campaign_stats
 
-        ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
+    ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
     
     for keys in campaign_stats:
         for value in keys:
@@ -103,13 +104,12 @@ def main():
         grabbing the facebook ad accounts, storing values in the database, generating the html document and sending the html document to a list of clients"""
     FacebookConnection = FacebookAPI() # Create the facebook api object
     FacebookAdAccounts = create_structure(FacebookConnection.get_accounts()) #dictionary of account name, id
+    CTCDatabase = Database()
+
     for acc_name, acc_id in FacebookAdAccounts.items(): #iterate through all account names, ids
         acc_campaign_id = FacebookConnection.get_prospecting_campaign_id(acc_id) #Grab the prospecting campaign id
         campaign_stats = FacebookConnection.get_campaign_stats(acc_campaign_id) #Get all the necessary data points required to calculate score
         ctc_score = calculate_ctc_score(campaign_stats)
-
-
-
 
 if __name__ == '__main__':
     main()
