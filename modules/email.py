@@ -30,12 +30,12 @@ def py_mail(SUBJECT, BODY, TO, FROM):
         server.set_debuglevel(1)
     
     # Credentials (if needed) for sending the mail
-    password = "Anubis1995"
+        password = "Anubis1995"
 
 server.starttls()
-    server.login("rsdihom@gmail.com","Anubis1995")
-    server.sendmail("rsdihom@gmai.com", ["rsdihom@gmail.com"], MESSAGE.as_string())
-    server.quit()
+server.login("rsdihom@gmail.com","Anubis1995")
+server.sendmail("rsdihom@gmai.com", ["rsdihom@gmail.com"], MESSAGE.as_string())
+server.quit()
 
 if __name__ == "__main__":
     """Executes if the script is run as main script (for testing purposes)"""
