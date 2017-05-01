@@ -6,7 +6,6 @@ from modules.db import Database
 
 def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
-    print campaign_stats
 
     ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
     
@@ -80,7 +79,7 @@ def calculate_ctc_score(campaign_stats):
                       + frequencyScore*(.10) 
                       )/ numberOfFields
     
-    print('CTC SCORE: {}'.format(finalAlgorithm))
+    #print('CTC SCORE: {}'.format(finalAlgorithm))
     return finalAlgorithm
 
 

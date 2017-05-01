@@ -4,6 +4,8 @@ from facebookads.adobjects.adaccount import AdAccount
 from facebookads.adobjects.adset import AdSet
 from facebookads.adobjects.campaign import Campaign
 
+import datetime
+
 #Global variable for API Access 
 my_app_id = '199864797164834'
 my_app_secret = 'c793d8993eca253282938ce1e48a6bbd'
@@ -51,6 +53,11 @@ class FacebookAPI:
                   'reach',
                   'cpm',
                   'relevance_score']
-
-        insights = campaign.get_insights(fields=fields)
+        date = datetime.datetime.strptime('2017-3-26', "%Y-%m-%d")
+        time_diff = datetime.timedelta(days=25)
+        new_date = date + time_diff
+        print str(new_date).split()[0]
+        insights = campaign.get_insights(fields=fields, params={ 'time_range':{'since':'2017-4-1', 'until':'2017-5-30'}, 'time_increment':1})
+        #insights = campaign.get_insights(fields=fields, params={'date_preset':'lifetime', 'time_increment':1})
+       # print insights
         return insights
