@@ -3,7 +3,9 @@ from facebookads import objects
 from facebookads.adobjects.adaccount import AdAccount
 from facebookads.adobjects.adset import AdSet
 from facebookads.adobjects.campaign import Campaign
+from facebookads.adobjects.adsinsights import AdsInsights
 
+from collections import defaultdict
 import datetime
 
 #Global variable for API Access 
@@ -50,7 +52,6 @@ class FacebookAPI:
                   'ctr',
                   'frequency',
                   'impressions',
-                  'reach',
                   'cpm',
                   'relevance_score']
         date = datetime.datetime.strptime('2017-3-26', "%Y-%m-%d")
@@ -59,5 +60,25 @@ class FacebookAPI:
         print str(new_date).split()[0]
         insights = campaign.get_insights(fields=fields, params={ 'time_range':{'since':'2017-4-1', 'until':'2017-5-30'}, 'time_increment':1})
         #insights = campaign.get_insights(fields=fields, params={'date_preset':'lifetime', 'time_increment':1})
-       # print insights
+
         return insights
+    
+    def create_campaign_stats(self, campaign_stats):
+        """Takes in campaign insights and returns a dictionary of key(s) as fields and value(s) as history of the insight's values"""
+        campaign_dict = defaultdict(list)      
+        
+        for insight in campaign_stats:
+            campaign_dict['clicks'].append(insight['clicks'])
+            campaign_dict['cpc'].append(insight['cpc'])
+            campaign_dict['reach'].append(insight['reach'])
+            campaign_dict['ctr'].append(insight['ctr'])
+            campaign_dict['frequency'].append(insight['frequency'])
+            campaign_dict['impressions'].append(insight['impressions'])
+            campaign_dict['cpm'].append(insight['cpm'])
+            
+            
+        for k,v in campaign_dict.items():
+            print (k,v)
+            
+        return campaign_dict
+       
