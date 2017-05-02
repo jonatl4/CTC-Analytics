@@ -8,18 +8,15 @@ from modules.algstats import pstdev, mean
 def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
 
-
     ctrScore, cpcScore, clickScore, frequencyScore, cpmScore, impressionsScore, reachScore = 0, 0, 0, 0, 0, 0, 0 
     ctr_history, cpc_history, click_history, frequency_history, cpm_history, impressions_history, reach_history = [], [], [], [], [], [], []
     numberOfFields = 7
     
     """generate history of data"""
-    
-    #shows populated list
-    print campaign_stats
    
-    
-    for keys in campaign_stats:
+    campaign_stat_list = list(campaign_stats)
+
+    for keys in campaign_stat_list:
         for value in keys:
             if value == 'ctr':          ctr_history.append(float(keys[value]))
             if value == 'cpc':          cpc_history.append(float(keys[value]))
@@ -29,59 +26,53 @@ def calculate_ctc_score(campaign_stats):
             if value == 'impressions':  impressions_history.append(int(keys[value]))
             if value == 'reach':        reach_history.append(int(keys[value]))
     
-    
-
-
-    #shows empty list!
-    print campaign_stats
 
     
-    
-    for keys in campaign_stats:
-        if keys.get("date_start") == "2017-04-25":
+    for keys in campaign_stat_list:
+        if keys.get("date_start") == "2017-05-01":
             for value in keys:
                 
                 
                 if value == 'ctr':
                     field_mean = mean(ctr_history)
                     standard_deviation = pstdev(ctr_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         ctrScore += 1
                         
                 if value == "cpc":
                     field_mean = mean(cpc_history)
                     standard_deviation = pstdev(cpc_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         cpcScore += 1
                         
                 if value == 'clicks':
                     field_mean = mean(click_history)
                     standard_deviation = pstdev(click_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         clickScore += 1
                         
                 if value == "frequency":
                     field_mean = mean(frequency_history)
                     standard_deviation = pstdev(frequency_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         frequencyScore += 1
                         
                 if value == "cpm":
                     field_mean = mean(cpm_history)
                     standard_deviation = pstdev(cpm_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         cpmScore += 1
                         
                 if value == "impressions":
                     field_mean = mean(impressions_history)
                     standard_deviation = pstdev(impressions_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         impressionsScore += 1
                         
                 if value == "reach":
                     field_mean = mean(reach_history)
                     standard_deviation = pstdev(reach_history)
-                    if keys[value] > field_mean + standard_deviation:
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
                         reachScore += 1
                 
                     
@@ -94,11 +85,25 @@ def calculate_ctc_score(campaign_stats):
     """
     
     
+    
+    """
+    print "ctrScore: " + str(ctrScore)
+    print "ctrScore:" + str(cpcScore)
+    print "clickScore: " + str(clickScore)
+    print "frequencyScore: " + str(frequencyScore)
+    print "cpmScore: " + str(cpmScore)
+    print "impressionsScore: " + str(impressionsScore)
+    print "reachScore: " + str(reachScore)
+    """
+    
     finalAlgorithm = (ctrScore*(1) 
                       + cpcScore*(1) 
                       + clickScore*(1) 
                       + frequencyScore*(1) 
-                      )/ numberOfFields
+                      + cpmScore*(1) 
+                      + impressionsScore*(1) 
+                      + reachScore*(1)
+                      )/ float(numberOfFields)
     
     print('CTC SCORE: {}'.format(finalAlgorithm))
     return finalAlgorithm
