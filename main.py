@@ -8,6 +8,7 @@ from modules.algstats import pstdev, mean
 def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
 
+<<<<<<< HEAD
     ctrScore, cpcScore, clickScore, frequencyScore, cpmScore, impressionsScore, reachScore = 0, 0, 0, 0, 0, 0, 0 
     ctr_history, cpc_history, click_history, frequency_history, cpm_history, impressions_history, reach_history = [], [], [], [], [], [], []
     numberOfFields = 7
@@ -18,6 +19,10 @@ def calculate_ctc_score(campaign_stats):
     print campaign_stats
    
     
+=======
+    ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
+   
+>>>>>>> origin/master
     for keys in campaign_stats:
         for value in keys:
             if value == 'ctr':          ctr_history.append(float(keys[value]))
