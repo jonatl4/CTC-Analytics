@@ -1,5 +1,6 @@
 from modules.api import FacebookAPI
 from modules.db import Database
+from modules.algstats import pstdev, mean
 
 
 
@@ -7,79 +8,98 @@ from modules.db import Database
 def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
 
-    ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
+    ctrScore, cpcScore, clickScore, frequencyScore, cpmScore, impressionsScore, reachScore = 0, 0, 0, 0, 0, 0, 0 
+    ctr_history, cpc_history, click_history, frequency_history, cpm_history, impressions_history, reach_history = [], [], [], [], [], [], []
+    numberOfFields = 7
+    
+    """generate history of data"""
+    
+    #shows populated list
+    print campaign_stats
+   
     
     for keys in campaign_stats:
         for value in keys:
-            
-            """The percentage of times people saw your ad and performed a click"""              
-            if value == 'ctr':
-                if keys[value] < 1:
-                    ctrScore = 0.2
-                elif keys[value] > 1 and keys[value] < 3:
-                    ctrScore = 0.4
-                elif keys[value] > 3 and keys[value] < 6:
-                    ctrScore = 0.65
-                elif keys[value] > 6 and keys[value] < 8:
-                    ctrScore = 0.85
-                elif keys[value] > 8:
-                    ctrScore = 1
-                
-            """The average cost for each click"""    
-            if value == 'cpc':
-                if keys[value] < 0.25:
-                    cpcScore = 0.2
-                elif keys[value] > 0.25 and keys[value] < 0.50:
-                    cpcScore = 0.5
-                elif keys[value] > 0.50:
-                    cpcScore = 0.7     
-                    
-            """The number of clicks on your ads"""
-            if value == 'clicks':
-                if keys[value] < 1000:
-                    clickScore = 0
-                elif keys[value] > 1000 and keys[value] < 10000:
-                    clickScore = 0.2
-                elif keys[value] > 10000 and keys[value] < 50000:
-                    clickScore = 0.3
-                elif keys[value] > 50000 and keys[value] < 200000:
-                    clickScore = 0.5
-                elif keys[value] > 200000 and keys[value] < 300000:
-                    clickScore = 0.7
-                elif keys[value] > 300000 and keys[value] < 500000:
-                    clickScore = 0.9
-                elif keys[value] > 500000:
-                    clickScore = 1
-                  
-            """The average number of times each person saw your ad"""  
-            if value == 'frequency':
-                if keys[value] < 1:
-                    frequencyScore = 0.2
-                elif keys[value] > 1 and keys[value] < 3:
-                    frequencyScore = 0.6
-                elif keys[value] > 3 and keys[value] < 6:
-                    frequencyScore = 0.9
-                elif keys[value] > 6 and keys[value] < 9:
-                    frequencyScore = 1
-                elif keys[value] > 9 and keys[value] < 12:
-                    frequencyScore = 0.7
-                elif keys[value] > 12:
-                    frequencyScore = 0.4
-
-        """Score * (Weight) determines how much influence a specific field has on the algorithm.
-        Score = a we come up with based on the data
-        Weight = how important we think that field is in making a decision (out of 1)
-        numberOfFields = the number of fields that will give us a number between 0 and 1 when divided
-        """
-    numberOfFields = 4
+            if value == 'ctr':          ctr_history.append(float(keys[value]))
+            if value == 'cpc':          cpc_history.append(float(keys[value]))
+            if value == 'clicks':       click_history.append(int(keys[value]))
+            if value == 'frequency':    frequency_history.append(float(keys[value]))
+            if value == 'cpm':          cpm_history.append(float(keys[value]))
+            if value == 'impressions':  impressions_history.append(int(keys[value]))
+            if value == 'reach':        reach_history.append(int(keys[value]))
     
-    finalAlgorithm = (ctrScore*(.35) 
-                      + cpcScore*(.30) 
-                      + clickScore*(.25) 
-                      + frequencyScore*(.10) 
+    
+
+
+    #shows empty list!
+    print campaign_stats
+
+    
+    
+    for keys in campaign_stats:
+        if keys.get("date_start") == "2017-04-25":
+            for value in keys:
+                
+                
+                if value == 'ctr':
+                    field_mean = mean(ctr_history)
+                    standard_deviation = pstdev(ctr_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        ctrScore += 1
+                        
+                if value == "cpc":
+                    field_mean = mean(cpc_history)
+                    standard_deviation = pstdev(cpc_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        cpcScore += 1
+                        
+                if value == 'clicks':
+                    field_mean = mean(click_history)
+                    standard_deviation = pstdev(click_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        clickScore += 1
+                        
+                if value == "frequency":
+                    field_mean = mean(frequency_history)
+                    standard_deviation = pstdev(frequency_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        frequencyScore += 1
+                        
+                if value == "cpm":
+                    field_mean = mean(cpm_history)
+                    standard_deviation = pstdev(cpm_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        cpmScore += 1
+                        
+                if value == "impressions":
+                    field_mean = mean(impressions_history)
+                    standard_deviation = pstdev(impressions_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        impressionsScore += 1
+                        
+                if value == "reach":
+                    field_mean = mean(reach_history)
+                    standard_deviation = pstdev(reach_history)
+                    if keys[value] > field_mean + standard_deviation:
+                        reachScore += 1
+                
+                    
+            
+        
+    """Score * (Weight) determines how much influence a specific field has on the algorithm.
+    Score = a we come up with based on the data
+    Weight = how important we think that field is in making a decision (out of 1)
+    numberOfFields = the number of fields that will give us a number between 0 and 1 when divided
+    """
+    
+    
+    finalAlgorithm = (ctrScore*(1) 
+                      + cpcScore*(1) 
+                      + clickScore*(1) 
+                      + frequencyScore*(1) 
                       )/ numberOfFields
     
-    #print('CTC SCORE: {}'.format(finalAlgorithm))
+    print('CTC SCORE: {}'.format(finalAlgorithm))
     return finalAlgorithm
 
 
@@ -108,7 +128,7 @@ def main():
     for acc_name, acc_id in FacebookAdAccounts.items(): #iterate through all account names, ids
         acc_campaign_id = FacebookConnection.get_prospecting_campaign_id(acc_id) #Grab the prospecting campaign id
         campaign_stats = FacebookConnection.get_campaign_stats(acc_campaign_id) #Get all the necessary data points required to calculate score
-	print campaign_stats
+	#print campaign_stats
         #campaign_dict = FacebookConnection.create_campaign_stats(campaign_stats)
         ctc_score = calculate_ctc_score(campaign_stats)
 
