@@ -8,7 +8,7 @@ def calculate_ctc_score(campaign_stats):
     """Returns a ctc score from a given campaign"""
 
     ctrScore, cpcScore, clickScore, frequencyScore = 0, 0, 0, 0
-    
+    sdsdsd
     for keys in campaign_stats:
         for value in keys:
             
