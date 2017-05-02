@@ -108,7 +108,8 @@ def main():
     for acc_name, acc_id in FacebookAdAccounts.items(): #iterate through all account names, ids
         acc_campaign_id = FacebookConnection.get_prospecting_campaign_id(acc_id) #Grab the prospecting campaign id
         campaign_stats = FacebookConnection.get_campaign_stats(acc_campaign_id) #Get all the necessary data points required to calculate score
-        campaign_dict = FacebookConnection.create_campaign_stats(campaign_stats)
+	print campaign_stats
+        #campaign_dict = FacebookConnection.create_campaign_stats(campaign_stats)
         ctc_score = calculate_ctc_score(campaign_stats)
 
 if __name__ == '__main__':
