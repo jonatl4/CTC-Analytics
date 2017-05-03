@@ -36,44 +36,106 @@ def calculate_ctc_score(campaign_stats):
                 if value == 'ctr':
                     field_mean = mean(ctr_history)
                     standard_deviation = pstdev(ctr_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         ctrScore += 1
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                        ctrScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        ctrScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        ctrScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        ctrScore += 0
                         
                 if value == "cpc":
                     field_mean = mean(cpc_history)
                     standard_deviation = pstdev(cpc_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         cpcScore += 1
+                    elif (float(keys[value]) > float(field_mean + standard_deviation)):
+                        cpcScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        cpcScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        cpcScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        cpcScore += 0
+                    
                         
                 if value == 'clicks':
                     field_mean = mean(click_history)
                     standard_deviation = pstdev(click_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         clickScore += 1
+                    elif (float(keys[value]) > float(field_mean + standard_deviation)):
+                        clickScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        clickScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        clickScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        clickScore += 0
+                    
                         
                 if value == "frequency":
                     field_mean = mean(frequency_history)
                     standard_deviation = pstdev(frequency_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         frequencyScore += 1
+                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                        frequencyScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        frequencyScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        frequencyScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        frequencyScore += 0
+                    
                         
                 if value == "cpm":
                     field_mean = mean(cpm_history)
                     standard_deviation = pstdev(cpm_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         cpmScore += 1
+                    elif (float(keys[value]) > float(field_mean + standard_deviation)):
+                        cpmScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        cpmScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        cpmScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        cpmScore += 0
+                    
                         
                 if value == "impressions":
                     field_mean = mean(impressions_history)
                     standard_deviation = pstdev(impressions_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         impressionsScore += 1
+                    elif (float(keys[value]) > float(field_mean + standard_deviation)):
+                        impressionsScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        impressionsScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        impressionsScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        impressionsScore += 0
+                    
                         
                 if value == "reach":
                     field_mean = mean(reach_history)
                     standard_deviation = pstdev(reach_history)
-                    if (float(keys[value]) > float(field_mean + standard_deviation)):
+                    if (float(keys[value]) > float(field_mean + standard_deviation*2)):
                         reachScore += 1
+                    elif (float(keys[value]) > float(field_mean + standard_deviation)):
+                        reachScore += 0.75
+                    elif (float(keys[value]) > float(field_mean - standard_deviation) and float(keys[value]) < float(field_mean + standard_deviation)):
+                        reachScore += 0.5
+                    elif (float(keys[value]) < float(field_mean - standard_deviation)):
+                        reachScore += 0.25
+                    elif (float(keys[value]) < float(field_mean - standard_deviation*2)):
+                        reachScore += 0
+                    
                 
                     
             
@@ -86,7 +148,7 @@ def calculate_ctc_score(campaign_stats):
     
     
     
-    """
+
     print "ctrScore: " + str(ctrScore)
     print "ctrScore:" + str(cpcScore)
     print "clickScore: " + str(clickScore)
@@ -94,7 +156,7 @@ def calculate_ctc_score(campaign_stats):
     print "cpmScore: " + str(cpmScore)
     print "impressionsScore: " + str(impressionsScore)
     print "reachScore: " + str(reachScore)
-    """
+    
     
     finalAlgorithm = (ctrScore*(1) 
                       + cpcScore*(1) 
