@@ -1,11 +1,38 @@
 from modules.api import FacebookAPI
 from modules.db import Database
 from modules.algstats import pstdev, mean
+import time
 
 
 
+def calculate_ctc_score(campaign_data_set, curr_date_values):
+    #campaign_data_set is going to be a set of dictionaries nested in to a list. It is going to have all the campaigns data
+    #except for today. See bellow on how to grab the values out.
+    for datum in campaign_data_set:
+        print datum['date']
+        print datum['account_id']
+        print datum['account_name']
+        print datum['clicks']
+        print datum['cpc']
+        print datum['cpm']
+        print datum['ctr']
+        print datum['frequency']
+        print datum['reach']
+    
+    #curr_data_values is going to be todays values compared against campaign_data_set. Its only a dictionary. See below for grabbing the data
+    print curr_date_values['date']
+    print curr_date_values['account_id']
+    print curr_date_values['account_name']
+    print curr_date_values['clicks']
+    print curr_date_values['cpc']
+    print curr_date_values['cpm']
+    print curr_date_values['ctr']
+    print curr_date_values['frequency']
+    print curr_date_values['reach']
+    
+    
 
-def calculate_ctc_score(campaign_stats):
+def calculate_ctc_score_old(campaign_stats):
     """Returns a ctc score from a given campaign"""
 
     ctrScore, cpcScore, clickScore, frequencyScore, cpmScore, impressionsScore, reachScore = 0, 0, 0, 0, 0, 0, 0 
@@ -149,13 +176,13 @@ def calculate_ctc_score(campaign_stats):
     
     
 
-    print "ctrScore: " + str(ctrScore)
-    print "ctrScore:" + str(cpcScore)
-    print "clickScore: " + str(clickScore)
-    print "frequencyScore: " + str(frequencyScore)
-    print "cpmScore: " + str(cpmScore)
-    print "impressionsScore: " + str(impressionsScore)
-    print "reachScore: " + str(reachScore)
+    #print "ctrScore: " + str(ctrScore)
+    #print "ctrScore:" + str(cpcScore)
+    #print "clickScore: " + str(clickScore)
+    #print "frequencyScore: " + str(frequencyScore)
+    #print "cpmScore: " + str(cpmScore)
+    #print "impressionsScore: " + str(impressionsScore)
+    #print "reachScore: " + str(reachScore)
     
     
     finalAlgorithm = (ctrScore*(1) 
@@ -167,7 +194,7 @@ def calculate_ctc_score(campaign_stats):
                       + reachScore*(1)
                       )/ float(numberOfFields)
     
-    print('CTC SCORE: {}'.format(finalAlgorithm))
+    #print('CTC SCORE: {}'.format(finalAlgorithm))
     return finalAlgorithm
 
 
@@ -192,13 +219,26 @@ def main():
     FacebookConnection = FacebookAPI() # Create the facebook api object
     FacebookAdAccounts = create_structure(FacebookConnection.get_accounts()) #dictionary of account name, id
     CTCDatabase = Database()
+    db_account_ids = CTCDatabase.getListOfAccountIDs()
+    curr_date = time.strftime("%Y-%m-%d")
+    
 
     for acc_name, acc_id in FacebookAdAccounts.items(): #iterate through all account names, ids
         acc_campaign_id = FacebookConnection.get_prospecting_campaign_id(acc_id) #Grab the prospecting campaign id
-        campaign_stats = FacebookConnection.get_campaign_stats(acc_campaign_id) #Get all the necessary data points required to calculate score
-	#print campaign_stats
-        #campaign_dict = FacebookConnection.create_campaign_stats(campaign_stats)
-        ctc_score = calculate_ctc_score(campaign_stats)
+
+        if acc_id not in db_account_ids: #Case when we have a new account id being added to the database.
+            campaign_stats = FacebookConnection.get_campaign_stats(acc_campaign_id) #Get all the necessary data points required to calculate score
+            CTCDatabase.insertCampaignData(campaign_stats, acc_id)
+        else: #Case where we only want to grab and insert to the db todays values
+            campaign_stats = FacebookConnection.get_current_date_stats(acc_campaign_id, curr_date)
+            CTCDatabase.insertCampaignData(campaign_stats, acc_id)
+
+
+        campaign_data_set = CTCDatabase.getCampaignData(acc_id, curr_date)
+        curr_date_values = CTCDatabase.getCurrentDateValues(acc_id, curr_date)
+     
+            
+        ctc_score = calculate_ctc_score(campaign_data_set, curr_date_values)
 
 if __name__ == '__main__':
     main()

@@ -54,31 +54,45 @@ class FacebookAPI:
                   'impressions',
                   'cpm',
                   'relevance_score']
-        date = datetime.datetime.strptime('2017-3-26', "%Y-%m-%d")
-        time_diff = datetime.timedelta(days=25)
-        new_date = date + time_diff
-        print str(new_date).split()[0]
-        insights = campaign.get_insights(fields=fields, params={ 'time_range':{'since':'2017-4-1', 'until':'2017-5-30'}, 'time_increment':1})
-        #insights = campaign.get_insights(fields=fields, params={'date_preset':'lifetime', 'time_increment':1})
-
-        return insights
+        #Need to create a new list for data
+        data = []
     
-    def create_campaign_stats(self, campaign_stats):
-        """Takes in campaign insights and returns a dictionary of key(s) as fields and value(s) as history of the insight's values"""
-        campaign_dict = defaultdict(list)      
+        #Grab lifetime campaign stats to find start and end date of campaign and convert to datetime formate
+        insights = campaign.get_insights(fields=fields, params={'date_preset':'lifetime'})
+        date_begin = datetime.datetime.strptime(insights[0]['date_start'], "%Y-%m-%d")
+        date_end = datetime.datetime.strptime(insights[0]['date_stop'], "%Y-%m-%d")
+        date_diff = datetime.timedelta(days=25)
+        new_date = date_begin + date_diff
+
+        #Pass in these values to the api
+        api_date_first = str(date_begin).split()[0]
+        api_date_last = str(new_date).split()[0]
+
+        #Strange API limitation where you can only grab 25 values at a time. 
+        while date_begin < date_end:
+            insights = campaign.get_insights(fields=fields, params={ 'time_range':{'since':api_date_first, 'until':api_date_last}, 'time_increment':1})
+            insights = list(insights)
+            date_begin = new_date 
+            new_date = date_begin + date_diff
+            api_date_first = api_date_last
+            api_date_last = str(new_date).split()[0]
+            data += insights
         
-        for insight in campaign_stats:
-            campaign_dict['clicks'].append(insight['clicks'])
-            campaign_dict['cpc'].append(insight['cpc'])
-            campaign_dict['reach'].append(insight['reach'])
-            campaign_dict['ctr'].append(insight['ctr'])
-            campaign_dict['frequency'].append(insight['frequency'])
-            campaign_dict['impressions'].append(insight['impressions'])
-            campaign_dict['cpm'].append(insight['cpm'])
-            
-            
-        for k,v in campaign_dict.items():
-            print (k,v)
-            
-        return campaign_dict
-       
+        return data
+    
+    def get_current_date_stats(self, campaign_id, curr_date):
+        """Takes in a campaign id and returns all the required data for the current date"""
+        campaign = Campaign(campaign_id)
+        fields = ['account_name',
+                  'campaign_name',
+                  'clicks',
+                  'cpc',
+                  'reach',
+                  'ctr',
+                  'frequency',
+                  'impressions',
+                  'cpm',
+                  'relevance_score']
+
+        insights = campaign.get_insights(fields=fields, params={ 'time_range':{'since':curr_date, 'until':curr_date}, 'time_increment':1})
+        return insights
