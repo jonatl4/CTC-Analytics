@@ -233,7 +233,7 @@ def main():
             campaign_stats = FacebookConnection.get_current_date_stats(acc_campaign_id, curr_date)
             CTCDatabase.insertCampaignData(campaign_stats, acc_id)
 
-
+        #Grab all the historical values and todays values
         campaign_data_set = CTCDatabase.getCampaignData(acc_id, curr_date)
         curr_date_values = CTCDatabase.getCurrentDateValues(acc_id, curr_date)
      
