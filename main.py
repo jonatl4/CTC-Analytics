@@ -18,104 +18,104 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
     
   
     for datum in campaign_data_set:
-        ctr_history.append(datum['ctr'])
-        cpc_history.append(datum['cpc'])
-        click_history.append(datum['clicks'])
-        frequency_history.append(datum['frequency'])
-        cpm_history.append(datum['cpm'])
-        impressions_history.append(datum['impressions'])
-        reach_history.append(datum['reach'])
+        ctr_history.append(datum['ctr_value'])
+        cpc_history.append(datum['cpc_value'])
+        click_history.append(datum['clicks_value'])
+        frequency_history.append(datum['frequency_value'])
+        cpm_history.append(datum['cpm_value'])
+        impressions_history.append(datum['impressions_value'])
+        reach_history.append(datum['reach_value'])
     
     field_mean = mean(ctr_history)
     standard_deviation = pstdev(ctr_history)
     
-    if (curr_date_values['ctr'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['ctr_value'] > (field_mean + standard_deviation*2)):
         ctrScore += 1
-    if (curr_date_values['ctr'] > (field_mean + standard_deviation)):
+    if (curr_date_values['ctr_value'] > (field_mean + standard_deviation)):
         ctrScore += 0.75
-    elif (curr_date_values['ctr'] > (field_mean - standard_deviation) and curr_date_values['ctr'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['ctr_value'] > (field_mean - standard_deviation) and curr_date_values['ctr_value'] < (field_mean + standard_deviation)):
         ctrScore += 0.5
-    elif (curr_date_values['ctr'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['ctr_value'] < (field_mean - standard_deviation)):
         ctrScore += 0.25
-    elif (curr_date_values['ctr'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['ctr_value'] < (field_mean - standard_deviation*2)):
         ctrScore += 0
     
     field_mean = mean(cpc_history)
     standard_deviation = pstdev(cpc_history)
-    if (curr_date_values['cpc'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['cpc_value'] > (field_mean + standard_deviation*2)):
         cpcScore += 1
-    elif (curr_date_values['cpc'] > (field_mean + standard_deviation)):
+    elif (curr_date_values['cpc_value'] > (field_mean + standard_deviation)):
         cpcScore += 0.75
-    elif (curr_date_values['cpc'] > (field_mean - standard_deviation) and curr_date_values['cpc'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['cpc_value'] > (field_mean - standard_deviation) and curr_date_values['cpc_value'] < (field_mean + standard_deviation)):
         cpcScore += 0.5
-    elif (curr_date_values['cpc'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['cpc_value'] < (field_mean - standard_deviation)):
         cpcScore += 0.25
-    elif (curr_date_values['cpc'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['cpc_value'] < (field_mean - standard_deviation*2)):
         cpcScore += 0
     
     field_mean = mean(click_history)
     standard_deviation = pstdev(click_history)
-    if (curr_date_values['clicks'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['clicks_value'] > (field_mean + standard_deviation*2)):
         clickScore += 1
-    elif (curr_date_values['clicks'] > (field_mean + standard_deviation)):
+    elif (curr_date_values['clicks_value'] > (field_mean + standard_deviation)):
         clickScore += 0.75
-    elif (curr_date_values['clicks'] > (field_mean - standard_deviation) and curr_date_values['clicks'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['clicks_value'] > (field_mean - standard_deviation) and curr_date_values['clicks_value'] < (field_mean + standard_deviation)):
         clickScore += 0.5
-    elif (curr_date_values['clicks'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['clicks_value'] < (field_mean - standard_deviation)):
         clickScore += 0.25
-    elif (curr_date_values['clicks'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['clicks_value'] < (field_mean - standard_deviation*2)):
         clickScore += 0
     
     field_mean = mean(frequency_history)
     standard_deviation = pstdev(frequency_history)
-    if (curr_date_values['frequency'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['frequency_value'] > (field_mean + standard_deviation*2)):
         frequencyScore += 1
-    if (curr_date_values['frequency'] > (field_mean + standard_deviation)):
+    if (curr_date_values['frequency_value'] > (field_mean + standard_deviation)):
         frequencyScore += 0.75
-    elif (curr_date_values['frequency'] > (field_mean - standard_deviation) and curr_date_values['frequency'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['frequency_value'] > (field_mean - standard_deviation) and curr_date_values['frequency_value'] < (field_mean + standard_deviation)):
         frequencyScore += 0.5
-    elif (curr_date_values['frequency'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['frequency_value'] < (field_mean - standard_deviation)):
         frequencyScore += 0.25
-    elif (curr_date_values['frequency'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['frequency_value'] < (field_mean - standard_deviation*2)):
         frequencyScore += 0
     
     field_mean = mean(cpm_history)
     standard_deviation = pstdev(cpm_history)
-    if (curr_date_values['cpm'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['cpm_value'] > (field_mean + standard_deviation*2)):
         cpmScore += 1
-    elif (curr_date_values['cpm'] > (field_mean + standard_deviation)):
+    elif (curr_date_values['cpm_value'] > (field_mean + standard_deviation)):
         cpmScore += 0.75
-    elif (curr_date_values['cpm'] > (field_mean - standard_deviation) and curr_date_values['cpm'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['cpm_value'] > (field_mean - standard_deviation) and curr_date_values['cpm_value'] < (field_mean + standard_deviation)):
         cpmScore += 0.5
-    elif (curr_date_values['cpm'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['cpm_value'] < (field_mean - standard_deviation)):
         cpmScore += 0.25
-    elif (curr_date_values['cpm'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['cpm_value'] < (field_mean - standard_deviation*2)):
         cpmScore += 0
     
     field_mean = mean(impressions_history)
     standard_deviation = pstdev(impressions_history)
-    if (curr_date_values['impressions'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['impressions_value'] > (field_mean + standard_deviation*2)):
         impressionsScore += 1
-    elif (curr_date_values['impressions'] > (field_mean + standard_deviation)):
+    elif (curr_date_values['impressions_value'] > (field_mean + standard_deviation)):
         impressionsScore += 0.75
-    elif (curr_date_values['impressions'] > (field_mean - standard_deviation) and curr_date_values['impressions'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['impressions_value'] > (field_mean - standard_deviation) and curr_date_values['impressions_value'] < (field_mean + standard_deviation)):
         impressionsScore += 0.5
-    elif (curr_date_values['impressions'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['impressions_value'] < (field_mean - standard_deviation)):
         impressionsScore += 0.25
-    elif (curr_date_values['impressions'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['impressions_value'] < (field_mean - standard_deviation*2)):
         impressionsScore += 0   
                
     field_mean = mean(reach_history)
     standard_deviation = pstdev(reach_history)
-    if (curr_date_values['reach'] > (field_mean + standard_deviation*2)):
+    if (curr_date_values['reach_value'] > (field_mean + standard_deviation*2)):
         reachScore += 1
-    elif (curr_date_values['reach'] > (field_mean + standard_deviation)):
+    elif (curr_date_values['reach_value'] > (field_mean + standard_deviation)):
         reachScore += 0.75
-    elif (curr_date_values['reach'] > (field_mean - standard_deviation) and curr_date_values['reach'] < (field_mean + standard_deviation)):
+    elif (curr_date_values['reach_value'] > (field_mean - standard_deviation) and curr_date_values['reach_value'] < (field_mean + standard_deviation)):
         reachScore += 0.5
-    elif (curr_date_values['reach'] < (field_mean - standard_deviation)):
+    elif (curr_date_values['reach_value'] < (field_mean - standard_deviation)):
         reachScore += 0.25
-    elif (curr_date_values['reach'] < (field_mean - standard_deviation*2)):
+    elif (curr_date_values['reach_value'] < (field_mean - standard_deviation*2)):
         reachScore += 0
      
 
@@ -171,13 +171,13 @@ def create_structure(facebook_ad_accounts):
 
 def calculate_percentage_change(curr_values, second_values):
     perc_change = {}
-    perc_change['ctr_change'] = round(((curr_values['ctr'] - second_values['ctr'])/second_values['ctr']) * 100,2)
-    perc_change['cpc_change'] = round(((curr_values['cpc'] - second_values['cpc'])/second_values['cpc']) * 100, 2)
-    perc_change['click_change'] = round((float(curr_values['clicks']) - float(second_values['clicks']))/float(second_values['clicks']) * 100, 2)
-    perc_change['frequency_change'] = round(((curr_values['frequency'] - second_values['frequency'])/second_values['frequency']) * 100, 2)
-    perc_change['cpm_change'] = round(((curr_values['cpm'] - second_values['cpm'])/second_values['cpm']) * 100, 2)
-    perc_change['impression_change'] = round(((curr_values['impressions'] - second_values['impressions'])/second_values['impressions']) * 100, 2)
-    perc_change['reach_change'] = round((float(curr_values['reach']) - float(second_values['reach']))/float(second_values['reach']) * 100, 2)
+    perc_change['ctr_change'] = round(((curr_values['ctr_value'] - second_values['ctr_value'])/second_values['ctr_value']) * 100,2)
+    perc_change['cpc_change'] = round(((curr_values['cpc_value'] - second_values['cpc_value'])/second_values['cpc_value']) * 100, 2)
+    perc_change['click_change'] = round((float(curr_values['clicks_value']) - float(second_values['clicks_value']))/float(second_values['clicks_value']) * 100, 2)
+    perc_change['frequency_change'] = round(((curr_values['frequency_value'] - second_values['frequency_value'])/second_values['frequency_value']) * 100, 2)
+    perc_change['cpm_change'] = round(((curr_values['cpm_value'] - second_values['cpm_value'])/second_values['cpm_value']) * 100, 2)
+    perc_change['impression_change'] = round(((curr_values['impressions_value'] - second_values['impressions_value'])/second_values['impressions_value']) * 100, 2)
+    perc_change['reach_change'] = round((float(curr_values['reach_value']) - float(second_values['reach_value']))/float(second_values['reach_value']) * 100, 2)
     return perc_change
 
 def main():

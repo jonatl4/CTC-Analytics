@@ -109,13 +109,13 @@ class Database:
             datum['date'] = d[0]
             datum['account_id'] = d[1]
             datum['account_name'] = d[2]
-            datum['clicks'] = d[3]
-            datum['cpc'] = d[4]
-            datum['cpm'] = d[5]
-            datum['impressions'] = d[6]
-            datum['ctr'] = d[7]
-            datum['frequency'] = d[8]
-            datum['reach'] = d[9]
+            datum['clicks_value'] = d[3]
+            datum['cpc_value'] = d[4]
+            datum['cpm_value'] = d[5]
+            datum['impressions_value'] = d[6]
+            datum['ctr_value'] = d[7]
+            datum['frequency_value'] = d[8]
+            datum['reach_value'] = d[9]
             return_data.append(datum)
 
         return return_data
@@ -137,13 +137,13 @@ class Database:
         return_data['date'] = data[0]
         return_data['account_id'] = data[1]
         return_data['account_name'] = data[2]
-        return_data['clicks'] = data[3]
-        return_data['cpc'] = data[4]
-        return_data['cpm'] = data[5]
-        return_data['impressions'] = data[6]
-        return_data['ctr'] = data[7]
-        return_data['frequency'] = data[8]
-        return_data['reach'] = data[9]
+        return_data['clicks_value'] = data[3]
+        return_data['cpc_value'] = data[4]
+        return_data['cpm_value'] = data[5]
+        return_data['impressions_value'] = data[6]
+        return_data['ctr_value'] = data[7]
+        return_data['frequency_value'] = data[8]
+        return_data['reach_value'] = data[9]
         
 
         return return_data
