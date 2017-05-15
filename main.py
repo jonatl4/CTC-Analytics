@@ -1,14 +1,16 @@
 from modules.api import FacebookAPI
 from modules.db import Database
+from modules.emailv2 import Email
 from modules.algstats import pstdev, mean
 import time
+from datetime import date, timedelta
 
 
 
 def calculate_ctc_score(campaign_data_set, curr_date_values):
     #campaign_data_set is going to be a set of dictionaries nested in to a list. It is going to have all the campaigns data
     #except for today. See bellow on how to grab the values out.
-    
+    calculation_return = {}
     
     ctrScore, cpcScore, clickScore, frequencyScore, cpmScore, impressionsScore, reachScore = 0, 0, 0, 0, 0, 0, 0 
     ctr_history, cpc_history, click_history, frequency_history, cpm_history, impressions_history, reach_history = [], [], [], [], [], [], []
@@ -21,7 +23,7 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
         click_history.append(datum['clicks'])
         frequency_history.append(datum['frequency'])
         cpm_history.append(datum['cpm'])
-        #impressions_history.append(datum['impressions'])
+        impressions_history.append(datum['impressions'])
         reach_history.append(datum['reach'])
     
     field_mean = mean(ctr_history)
@@ -89,19 +91,19 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
         cpmScore += 0.25
     elif (curr_date_values['cpm'] < (field_mean - standard_deviation*2)):
         cpmScore += 0
-      
-#     field_mean = mean(impressions_history)
-#     standard_deviation = pstdev(impressions_history)
-#     if (curr_date_values['impressions'] > (field_mean + standard_deviation*2)):
-#         impressionsScore += 1
-#     elif (curr_date_values['impressions'] > (field_mean + standard_deviation)):
-#         impressionsScore += 0.75
-#     elif (curr_date_values['impressions'] > (field_mean - standard_deviation) and curr_date_values['impressions'] < (field_mean + standard_deviation)):
-#         impressionsScore += 0.5
-#     elif (curr_date_values['impressions'] < (field_mean - standard_deviation)):
-#         impressionsScore += 0.25
-#     elif (curr_date_values['impressions'] < (field_mean - standard_deviation*2)):
-#         impressionsScore += 0   
+    
+    field_mean = mean(impressions_history)
+    standard_deviation = pstdev(impressions_history)
+    if (curr_date_values['impressions'] > (field_mean + standard_deviation*2)):
+        impressionsScore += 1
+    elif (curr_date_values['impressions'] > (field_mean + standard_deviation)):
+        impressionsScore += 0.75
+    elif (curr_date_values['impressions'] > (field_mean - standard_deviation) and curr_date_values['impressions'] < (field_mean + standard_deviation)):
+        impressionsScore += 0.5
+    elif (curr_date_values['impressions'] < (field_mean - standard_deviation)):
+        impressionsScore += 0.25
+    elif (curr_date_values['impressions'] < (field_mean - standard_deviation*2)):
+        impressionsScore += 0   
                
     field_mean = mean(reach_history)
     standard_deviation = pstdev(reach_history)
@@ -139,8 +141,19 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
                       + reachScore*(1)
                       )/ float(numberOfFields)
     
-    print('CTC SCORE: {}'.format(finalAlgorithm))
-    return finalAlgorithm
+    #print('CTC SCORE: {}'.format(finalAlgorithm))
+    
+    #Append all the data to a dictionary to then add to the database
+    calculation_return['ctc_final_score'] = finalAlgorithm
+    calculation_return['ctr_score'] = ctrScore
+    calculation_return['cpc_score'] = cpcScore
+    calculation_return['click_score'] = clickScore
+    calculation_return['frequency_score'] = frequencyScore
+    calculation_return['cpm_score'] = cpmScore
+    calculation_return['impression_score'] = impressionsScore
+    calculation_return['reach_score'] = reachScore
+
+    return calculation_return
 
 
 
@@ -156,6 +169,16 @@ def create_structure(facebook_ad_accounts):
     return ad_account
 
 
+def calculate_percentage_change(curr_values, second_values):
+    perc_change = {}
+    perc_change['ctr_change'] = round(((curr_values['ctr'] - second_values['ctr'])/second_values['ctr']) * 100,2)
+    perc_change['cpc_change'] = round(((curr_values['cpc'] - second_values['cpc'])/second_values['cpc']) * 100, 2)
+    perc_change['click_change'] = round((float(curr_values['clicks']) - float(second_values['clicks']))/float(second_values['clicks']) * 100, 2)
+    perc_change['frequency_change'] = round(((curr_values['frequency'] - second_values['frequency'])/second_values['frequency']) * 100, 2)
+    perc_change['cpm_change'] = round(((curr_values['cpm'] - second_values['cpm'])/second_values['cpm']) * 100, 2)
+    perc_change['impression_change'] = round(((curr_values['impressions'] - second_values['impressions'])/second_values['impressions']) * 100, 2)
+    perc_change['reach_change'] = round((float(curr_values['reach']) - float(second_values['reach']))/float(second_values['reach']) * 100, 2)
+    return perc_change
 
 def main():
     """The controller of the entire program. It will handle initializing the facebook API connection, and call various modules in the program to perform tasks such as 
@@ -165,7 +188,7 @@ def main():
     CTCDatabase = Database()
     db_account_ids = CTCDatabase.getListOfAccountIDs()
     curr_date = time.strftime("%Y-%m-%d")
-    
+    yesterday = (date.today() - timedelta(1)).strftime("%Y-%m-%d") 
 
     for acc_name, acc_id in FacebookAdAccounts.items(): #iterate through all account names, ids
         acc_campaign_id = FacebookConnection.get_prospecting_campaign_id(acc_id) #Grab the prospecting campaign id
@@ -180,9 +203,23 @@ def main():
         #Grab all the historical values and todays values
         campaign_data_set = CTCDatabase.getCampaignData(acc_id, curr_date)
         curr_date_values = CTCDatabase.getCurrentDateValues(acc_id, curr_date)
-     
-            
+        yesterday_values = CTCDatabase.getCurrentDateValues(acc_id, yesterday)
         ctc_score = calculate_ctc_score(campaign_data_set, curr_date_values)
+        check_past = CTCDatabase.checkForPastScore(acc_id, yesterday)
+
+        if check_past == True: #This if statement is meant for brand new clients. We need to do a comparision from yesterdays date.
+            yesterday_campaign_values = CTCDatabase.getCampaignData(acc_id, yesterday)
+            yesterday_ctc_score = calculate_ctc_score(campaign_data_set, curr_date_values)
+            CTCDatabase.insertScores(yesterday_ctc_score, curr_date_values['account_name'], curr_date_values['account_id'], yesterday)
+        
+        percentage_change = calculate_percentage_change(curr_date_values, yesterday_values) #calculate percentage change between todays and yesterdays values
+        CTCDatabase.insertScores(ctc_score, curr_date_values['account_name'], curr_date_values['account_id'], curr_date)
+        CTCDatabase.insertPerChange(percentage_change, curr_date_values['account_name'], curr_date_values['account_id'], curr_date)
+
+        #The rest of the code will be dedicated to email creation
+        email = Email(curr_date_values, ctc_score, percentage_change)
+
+
 
 if __name__ == '__main__':
     main()

@@ -77,7 +77,7 @@ class FacebookAPI:
             api_date_first = api_date_last
             api_date_last = str(new_date).split()[0]
             data += insights
-        
+
         return data
     
     def get_current_date_stats(self, campaign_id, curr_date):
