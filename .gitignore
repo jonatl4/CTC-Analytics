@@ -1,6 +1,6 @@
 # App-specific files #
 ######################
-exports
+sent
 *.pyc
 .idea
 .vscode

@@ -23,8 +23,9 @@ class Email:
         self.EXCEL = win32.DispatchEx('Excel.Application')
         self.EXCEL.Visible = True
         self.date = datetime.date.today()
-        self.templateFolder = os.path.join(os.getcwd(), 'exports')
-        self.emailExport = os.path.join(self.templateFolder, 'sent\\' + self.values['account_name'])
+        self.templateFolder = os.path.join(os.getcwd(), 'template')
+        self.exportFolder = os.path.join(os.getcwd(), 'sent')
+        self.emailExport = os.path.join(self.exportFolder, self.values['account_name'])
         if not os.path.exists(self.emailExport):
             os.makedirs(self.emailExport)
 
@@ -83,7 +84,7 @@ class Email:
 
     def copyEmail(self):
         "Copies the template html file that is stored in the templates/report folder and creates a new html file in the template/export folder. You will need some sort of naming convention for new html files so maybe like {account_name}_{todays_date}.html"
-        self.src_path = os.path.join(os.getcwd(), 'exports\CTCEmail.txt')
+        self.src_path = os.path.join(os.getcwd(), 'template\CTCEmail.txt')
         self.dst_path = os.path.join(self.emailExport, self.values['account_name'] + '_' + str(self.date) + '.txt')
         copyfile(self.src_path, self.dst_path)
         return
