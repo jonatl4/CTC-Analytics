@@ -1,6 +1,6 @@
 from modules.api import FacebookAPI
 from modules.db import Database
-from modules.emailv2 import Email
+from modules.emailclient import Email
 from modules.algstats import pstdev, mean
 import time
 from datetime import date, timedelta
@@ -159,7 +159,7 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
 
 def create_structure(facebook_ad_accounts):
     """Returns a dictionary of the ad accounts with the following format {AccountName1: AccountID1, AccountName2: AccountID2...}"""
-    ad_account_ids = ['1699751017001576'] #Axe Bat Account ID
+    ad_account_ids = ['1699751017001576', '1647162208927124'] #Axe Bat Account ID
     ad_account = {}
     for acc in facebook_ad_accounts:
         acc_strip = acc['id'].strip('act_')
@@ -217,6 +217,7 @@ def main():
         CTCDatabase.insertPerChange(percentage_change, curr_date_values['account_name'], curr_date_values['account_id'], curr_date)
 
         #The rest of the code will be dedicated to email creation
+        print "Sending email for account: " + str(acc_name)
         email = Email(curr_date_values, ctc_score, percentage_change)
 
 
