@@ -159,7 +159,7 @@ def calculate_ctc_score(campaign_data_set, curr_date_values):
 
 def create_structure(facebook_ad_accounts):
     """Returns a dictionary of the ad accounts with the following format {AccountName1: AccountID1, AccountName2: AccountID2...}"""
-    ad_account_ids = ['1699751017001576', '1647162208927124'] #Axe Bat Account ID
+    ad_account_ids = ['1699751017001576'] #Axe Bat Account ID
     ad_account = {}
     for acc in facebook_ad_accounts:
         acc_strip = acc['id'].strip('act_')
