@@ -5,6 +5,8 @@ from modules.algstats import pstdev, mean
 import time
 from datetime import date, timedelta
 
+EMAIl_ADDRESS = "" #Need to replace value with email address you want to send CTC score to 
+
 
 
 def calculate_ctc_score(campaign_data_set, curr_date_values):
@@ -218,7 +220,7 @@ def main():
 
         #The rest of the code will be dedicated to email creation
         print "Sending email for account: " + str(acc_name)
-        email = Email(curr_date_values, ctc_score, percentage_change)
+        email = Email(curr_date_values, ctc_score, percentage_change, EMAIl_ADDRESS)
 
 
 

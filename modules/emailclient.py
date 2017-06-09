@@ -10,10 +10,11 @@ from email.mime.image import MIMEImage
 import win32com.client as win32
 
 class Email:
-    def __init__(self, values, ctc_scores, percentage_change):
+    def __init__(self, values, ctc_scores, percentage_change, email_address):
         self.values = values #contain all the raw values
         self.ctc_scores = ctc_scores #contain all the values after standard deviation calculation
         self.percentage_change = percentage_change #contain all the values of percentage change between todays and yesterdays values
+        self.email_address = email_address #email address to send ctc score to
 
         #Merge dictionaries together to make it easier to iterate through the data
         self.tableData = dict(self.values)
@@ -100,7 +101,7 @@ class Email:
         mstRoot = MIMEMultipart('related')
         self.MESSAGE = MIMEMultipart('alternative')
         self.MESSAGE['subject'] = "CTC-Analytics: " + str(self.tableData['account_name']) + ' - ' + str(self.date)
-        self.MESSAGE['To'] = 'wyassine@uci.edu'
+        self.MESSAGE['To'] = self.email_address
         self.MESSAGE['From'] = 'analytics@commonthreatco.com'
         self.MESSAGE.preamble = """Here's an update on your ads' performance!"""
         HTML_BODY = MIMEText(self.file_read, 'html')
@@ -117,6 +118,6 @@ class Email:
         self.server = smtplib.SMTP('smtp.gmail.com:587')
         self.server.starttls()
         self.server.login("analytics@commonthreadco.com","C0mm0nthr3@d")
-        self.server.sendmail("wyassine@uci.edu", ["wyassine@uci.edu"], self.MESSAGE.as_string())
+        self.server.sendmail(self.email_address, [self.email_address], self.MESSAGE.as_string())
         self.server.quit()
         return
